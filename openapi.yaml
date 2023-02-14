@@ -4,15 +4,143 @@ info:
   summary: 'Pokemon REST API as technical assessment for Annalect'
   version: '0.1'
 paths:
-  
+  '/api/pokemon/':
+    get:
+      description: Returns all pokemon in the database.
+      responses:
+        '200':
+          description: 'A list of Pokemon'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pokemon'
+    post:
+      description: Create a new Pokemon
+      requestBody:
+        description: 'Pokemon data'
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Pokemon'
+      responses:
+        '201':
+          description: 'A new Pokemon was successfully created'
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Pokemon'
+  '/api/pokemon/{id}/':
+    parameters:
+      - name: id
+        in: path
+        description: Database ID (not creature_id) of the Pokemon to lookup
+        required: true
+        schema:
+          type: integer
+    get:
+      description: Returns details for the Pokemon specified by id.
+      responses:
+        '200':
+          description: Successfully retrieved Pokemon
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Pokemon'
+        '404':
+          description: Pokemon with the provided ID could not be found.
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/NotFoundError'
+    patch:
+      description: Update a Pokemon
+      requestBody:
+        description: 'Pokemon data'
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Pokemon'
+      responses:
+        '200':
+          description: 'The Pokemon was successfully updated'
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Pokemon'
+        '404':
+          description: Pokemon with the provided ID could not be found.
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/NotFoundError'
+    put:
+      description: Update a Pokemon. Guaranteed to be idempotent.
+      requestBody:
+        description: 'Pokemon data'
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Pokemon'
+      responses:
+        '200':
+          description: 'The Pokemon was successfully updated'
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Pokemon'
+        '404':
+          description: Pokemon with the provided ID could not be found.
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/NotFoundError'
+    delete:
+      description: Remove a Pokemon from the database
+      responses:
+        '204':
+          description: Successfully deleted the Pokemon.
+        '404':
+          description: Pokemon with the provided ID could not be found.
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/NotFoundError'
+
 components:
   schemas:
     Pokemon:
       type: object
+      required:
+        - creature_id
+        - name
+        - primary_type
+        - total
+        - hp
+        - attack
+        - defense
+        - special_attack
+        - special_defense
+        - speed
+        - generation
       properties:
         id:
           type: integer
-          format: int64
+          readOnly: true
+        creature_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
         name:
           type: string
         primary_type:
@@ -40,3 +168,8 @@ components:
         speed:
           type: integer
           format: int32
+        generation:
+          type: integer
+          format: int32
+        legendary:
+          type: boolean
