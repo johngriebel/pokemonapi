@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Pokemon(models.Model):
+    creature_id = models.IntegerField(null=True, help_text="ID number assigned by Kaggle.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=255)
@@ -14,3 +15,5 @@ class Pokemon(models.Model):
     special_attack = models.IntegerField()
     special_defense = models.IntegerField()
     speed = models.IntegerField()
+    generation = models.IntegerField(null=True)
+    legendary = models.BooleanField(default=False)
